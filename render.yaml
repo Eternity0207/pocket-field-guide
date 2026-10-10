@@ -1,0 +1,18 @@
+# Render Blueprint: deploys Pocket Field Guide as a free static site.
+# The cross-origin isolation headers let ONNX Runtime use every CPU thread.
+services:
+  - type: web
+    name: pocket-field-guide
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    headers:
+      - path: /*
+        name: Cross-Origin-Opener-Policy
+        value: same-origin
+      - path: /*
+        name: Cross-Origin-Embedder-Policy
+        value: credentialless
+      - path: /sw.js
+        name: Cache-Control
+        value: no-cache

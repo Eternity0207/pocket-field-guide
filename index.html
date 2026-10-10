@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2f4a32" />
+    <meta name="description" content="Identify plants, birds and bugs with AI that runs entirely on your device. Then put the phone away and go outside." />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <title>Pocket Field Guide</title>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">🌿</span>
+        <div>
+          <h1>Pocket Field Guide</h1>
+          <p class="tagline">Local AI. No account. Works with no signal.</p>
+        </div>
+      </div>
+      <button class="status-pill" id="statusPill" type="button" aria-describedby="statusText">
+        <span class="dot" id="statusDot"></span><span id="statusText">Models not downloaded</span>
+      </button>
+    </header>
+
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button role="tab" class="tab" data-tab="walk" aria-selected="true">Go outside</button>
+      <button role="tab" class="tab" data-tab="identify" aria-selected="false">Identify</button>
+      <button role="tab" class="tab" data-tab="journal" aria-selected="false">Journal</button>
+      <button role="tab" class="tab" data-tab="setup" aria-selected="false">Offline setup</button>
+    </nav>
+
+    <main>
+      <!-- WALK -->
+      <section class="panel" id="panel-walk" role="tabpanel">
+        <div class="card hero">
+          <h2>Plan a short walk with things to look for</h2>
+          <p class="muted">Pick how long you have. Gemma writes a few things to find, then the screen gets out of your way.</p>
+          <form id="walkForm" class="walk-form">
+            <fieldset>
+              <legend>Time</legend>
+              <div class="seg" id="walkTime">
+                <label><input type="radio" name="time" value="15" /> <span>15 min</span></label>
+                <label><input type="radio" name="time" value="30" checked /> <span>30 min</span></label>
+                <label><input type="radio" name="time" value="60" /> <span>1 hour</span></label>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>Where</legend>
+              <div class="seg" id="walkPlace">
+                <label><input type="radio" name="place" value="city streets" /> <span>Streets</span></label>
+                <label><input type="radio" name="place" value="a park" checked /> <span>Park</span></label>
+                <label><input type="radio" name="place" value="woods or a trail" /> <span>Woods</span></label>
+                <label><input type="radio" name="place" value="a garden or backyard" /> <span>Garden</span></label>
+                <label><input type="radio" name="place" value="a beach or waterside" /> <span>Water</span></label>
+              </div>
+            </fieldset>
+            <button class="btn primary" type="submit" id="walkBtn">Plan my walk</button>
+          </form>
+        </div>
+
+        <div class="card" id="questCard" hidden>
+          <div class="card-head">
+            <h3>Things to look for</h3>
+            <span class="muted small" id="questMeta"></span>
+          </div>
+          <ol class="quests" id="questList"></ol>
+          <div class="stream" id="questStream" aria-live="polite"></div>
+          <div class="row">
+            <button class="btn primary" id="startWalk" type="button" disabled>Start walking</button>
+            <button class="btn ghost" id="stopQuest" type="button" hidden>Stop</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- IDENTIFY -->
+      <section class="panel" id="panel-identify" role="tabpanel" hidden>
+        <div class="card">
+          <h2>What did you find?</h2>
+          <p class="muted">Add a photo of a plant, bird, bug, mushroom or leaf. It's checked on this device and never uploaded.</p>
+          <div class="drop" id="drop" tabindex="0">
+            <input type="file" id="fileInput" accept="image/*" capture="environment" hidden />
+            <div class="drop-inner">
+              <span class="drop-icon" aria-hidden="true">📷</span>
+              <strong>Drop a photo here</strong>
+              <span class="muted small">or</span>
+              <div class="row center">
+                <button class="btn" id="pickBtn" type="button">Choose a photo</button>
+                <button class="btn ghost" id="camBtn" type="button">Use camera</button>
+              </div>
+            </div>
+          </div>
+          <div class="camera" id="camera" hidden>
+            <video id="video" playsinline muted></video>
+            <div class="row center">
+              <button class="btn primary" id="snapBtn" type="button">Take photo</button>
+              <button class="btn ghost" id="camClose" type="button">Close</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card result" id="resultCard" hidden>
+          <div class="result-grid">
+            <img id="resultImg" alt="Your photo" />
+            <div>
+              <p class="eyebrow" id="resultGroup"></p>
+              <h3 id="resultName">…</h3>
+              <div class="confidence"><div class="bar" id="confBar"></div></div>
+              <p class="muted small" id="confText"></p>
+              <p class="small muted" id="altLabel">Not it? Pick another option:</p>
+              <div class="chips" id="alts"></div>
+            </div>
+          </div>
+          <div class="note">
+            <div class="note-head">
+              <h4>Field note <span class="muted small">by Gemma, on this device</span></h4>
+              <button class="btn ghost small" id="stopNote" type="button" hidden>Stop</button>
+            </div>
+            <div class="stream" id="noteStream" aria-live="polite"></div>
+            <p class="small muted" id="noteMeta"></p>
+          </div>
+          <label class="field">
+            <span>Your note (optional)</span>
+            <input type="text" id="userNote" placeholder="e.g. by the pond, three of them" maxlength="200" />
+          </label>
+          <label class="check">
+            <input type="checkbox" id="saveLoc" /> Save the location with this find (stays on this device)
+          </label>
+          <div class="row">
+            <button class="btn primary" id="saveFind" type="button">Save to journal</button>
+            <button class="btn ghost" id="again" type="button">Identify something else</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- JOURNAL -->
+      <section class="panel" id="panel-journal" role="tabpanel" hidden>
+        <div class="stats" id="stats"></div>
+        <div class="card-head">
+          <h2>Your finds</h2>
+          <button class="btn ghost small" id="exportBtn" type="button">Export as Markdown</button>
+        </div>
+        <div class="journal" id="journal"></div>
+        <p class="empty muted" id="journalEmpty">No finds yet. Your journal fills up when you go outside, not when you scroll.</p>
+      </section>
+
+      <!-- SETUP -->
+      <section class="panel" id="panel-setup" role="tabpanel" hidden>
+        <div class="card">
+          <h2>Download once, use offline</h2>
+          <p class="muted">Both models run in your browser. Download them on Wi-Fi once, and the app keeps working on a trail with no signal. Nothing you photograph or write is ever sent anywhere.</p>
+
+          <div class="model">
+            <div class="model-head">
+              <div>
+                <strong>Vision: CLIP ViT-B/32</strong>
+                <p class="muted small">Open-weight image model, about 155 MB. Matches your photo against a built-in field guide of about 150 species.</p>
+              </div>
+              <span class="badge" id="visionBadge">Not loaded</span>
+            </div>
+            <div class="progress"><div class="bar" id="visionBar"></div></div>
+            <p class="small muted" id="visionStatus"></p>
+          </div>
+
+          <div class="model">
+            <div class="model-head">
+              <div>
+                <strong>Language: Gemma 3</strong>
+                <p class="muted small">Google's open-weight model. Writes the field notes and walk ideas.</p>
+              </div>
+              <span class="badge" id="llmBadge">Not loaded</span>
+            </div>
+            <div class="seg" id="sizeSeg">
+              <label><input type="radio" name="size" value="1b" checked /> <span>1B, better (about 880 MB)</span></label>
+              <label><input type="radio" name="size" value="270m" /> <span>270M, faster (about 350 MB)</span></label>
+            </div>
+            <div class="seg" id="deviceSeg" aria-label="Run Gemma on">
+              <label><input type="radio" name="device" value="auto" checked /> <span>Auto (speed test)</span></label>
+              <label><input type="radio" name="device" value="webgpu" /> <span>GPU</span></label>
+              <label><input type="radio" name="device" value="wasm" /> <span>CPU</span></label>
+            </div>
+            <div class="progress"><div class="bar" id="llmBar"></div></div>
+            <p class="small muted" id="llmStatus"></p>
+          </div>
+
+          <div class="row">
+            <button class="btn primary" id="downloadBtn" type="button">Download models</button>
+            <button class="btn ghost small" id="clearBtn" type="button">Remove models</button>
+          </div>
+          <p class="small muted" id="deviceInfo"></p>
+        </div>
+
+        <div class="card">
+          <h3>Why it runs on your device</h3>
+          <ul class="why">
+            <li><strong>No signal needed.</strong> Trails, parks and riverbanks often have no coverage. A cloud API would stop working exactly where you need it.</li>
+            <li><strong>Your locations stay private.</strong> A journal of where you walk is sensitive. Here it only exists in this browser.</li>
+            <li><strong>Free to run.</strong> No API key and no per-photo cost, so nothing pushes you to keep it short or to pay.</li>
+            <li><strong>You can swap or extend it.</strong> The species list is a plain file. Add the birds in your area and the model knows them right away, with no retraining.</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <!-- Walking mode: the screen gets out of the way -->
+    <div class="walkmode" id="walkMode" hidden>
+      <div class="walkmode-inner">
+        <p class="eyebrow">Walking</p>
+        <div class="timer" id="timer">30:00</div>
+        <ol class="quests big" id="walkList"></ol>
+        <p class="muted small">Put the phone away. Come back when you spot one.</p>
+        <div class="row center">
+          <button class="btn" id="walkIdentify" type="button">I found something</button>
+          <button class="btn ghost" id="endWalk" type="button">End walk</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" hidden></div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "pocket-field-guide",
+  "version": "1.0.0",
+  "description": "On-device AI field guide that gets you outside. Gemma 3 + CLIP running in the browser.",
+  "scripts": {
+    "predev": "node scripts/copy-ort.mjs",
+    "dev": "vite",
+    "prebuild": "node scripts/copy-ort.mjs",
+    "build": "vite build",
+    "preview": "vite preview",
+    "embed": "node scripts/embed-labels.mjs"
+  },
+  "type": "module",
+  "dependencies": {
+    "@huggingface/transformers": "^4.3.0"
+  },
+  "devDependencies": {
+    "vite": "^6.4.4"
+  },
+  "private": true,
+  "license": "MIT"
+}

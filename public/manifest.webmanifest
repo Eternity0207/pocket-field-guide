@@ -1,0 +1,10 @@
+{
+  "name": "Pocket Field Guide",
+  "short_name": "Field Guide",
+  "description": "Identify plants, birds and bugs with on-device AI, then go outside.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f4f1e8",
+  "theme_color": "#2f4a32",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
