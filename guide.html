@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2f4a32" />
+    <meta name="description" content="How to use Pocket Field Guide: plan walks, identify plants and animals, keep a journal, and use it fully offline." />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <title>Guide · Pocket Field Guide</title>
+  </head>
+  <body class="guide-page">
+    <a class="skip" href="#content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="Back to Pocket Field Guide">
+        <span class="brand-mark" aria-hidden="true">🌿</span>
+        <span>
+          <span class="brand-name">Pocket Field Guide</span>
+          <span class="tagline">The guide</span>
+        </span>
+      </a>
+      <div class="top-actions">
+        <a class="btn primary small" href="./">Open the app →</a>
+      </div>
+    </header>
+
+    <div class="guide">
+      <nav class="toc" aria-label="On this page">
+        <p class="toc-title">On this page</p>
+        <ol>
+          <li><a href="#start">Quick start</a></li>
+          <li><a href="#walk">Going for a walk</a></li>
+          <li><a href="#identify">Identifying a find</a></li>
+          <li><a href="#field-notes">Reading a field note</a></li>
+          <li><a href="#journal">Your journal</a></li>
+          <li><a href="#offline">Using it offline</a></li>
+          <li><a href="#settings">Settings</a></li>
+          <li><a href="#troubleshooting">Troubleshooting</a></li>
+          <li><a href="#privacy">Privacy</a></li>
+          <li><a href="#your-species">Add your own species</a></li>
+          <li><a href="#how">How it works</a></li>
+        </ol>
+      </nav>
+
+      <article id="content" class="guide-body">
+        <header class="guide-hero">
+          <p class="eyebrow">Guide</p>
+          <h1>An AI field guide that wants you to put your phone away</h1>
+          <p class="lead muted">Pocket Field Guide plans short walks, names the plants and animals you find, and keeps a private journal. Both AI models run inside your browser, so it works on a trail with no signal and never uploads anything.</p>
+        </header>
+
+        <!-- QUICK START -->
+        <section id="start">
+          <h2>Quick start</h2>
+          <p>Use Chrome or Edge on a laptop or desktop: they support WebGPU, which makes Gemma fast. Other browsers may work but haven't been tested.</p>
+          <ol class="big-steps">
+            <li>
+              <h3>Download the models once</h3>
+              <p>Open <strong>Setup</strong> (or the "Get started" card) and click <strong>Download models</strong>. It's about 900 MB, so use Wi-Fi. This happens only once, and the app stays usable while it downloads.</p>
+            </li>
+            <li>
+              <h3>Plan a walk</h3>
+              <p>On <strong>Go outside</strong>, pick a time and a place and press <strong>Plan my walk</strong>. You get 3–5 things to look for in about ten seconds.</p>
+            </li>
+            <li>
+              <h3>Walk, spot, identify</h3>
+              <p>Press <strong>Start walking</strong>. The screen turns into a timer and checklist. When something catches your eye, tap <strong>I found something</strong>, take one photo and save it to your journal.</p>
+            </li>
+          </ol>
+          <aside class="callout">
+            <strong>Install it like an app.</strong> In Chrome, use the install icon in the address bar (or "Add to Home screen" on a phone) and it opens in its own window, even offline.
+          </aside>
+        </section>
+
+        <!-- WALK -->
+        <section id="walk">
+          <h2>Going for a walk</h2>
+          <p>The walk planner is the heart of the app. It gives you a reason to go out and things to notice once you're there.</p>
+          <dl class="defs">
+            <div><dt>How long?</dt><dd>15 minutes gives you 3 things to find, 30 minutes gives 4, and an hour gives 5.</dd></div>
+            <div><dt>Where?</dt><dd>Streets, park, woods, garden or water. The list changes to match: city walks get cracks in pavement and rooftop birds, woods get bark, moss and tracks.</dd></div>
+            <div><dt>Season</dt><dd>Worked out from today's date, so autumn lists include falling leaves and seeds. If you've saved a location south of the equator, the seasons flip.</dd></div>
+            <div><dt>Variety</dt><dd>Things you've already saved to your journal are left out of new lists. Don't like a list? Press <strong>Give me different ones</strong>.</dd></div>
+          </dl>
+          <h3>Walking mode</h3>
+          <p>Once you press <strong>Start walking</strong>, the app hides everything except the timer and your checklist. That's on purpose: the less there is to look at, the more you look around.</p>
+          <ul>
+            <li><strong>Tick items off</strong> as you find them. The counter shows how many are left.</li>
+            <li><strong>The timer can run over.</strong> It counts up past zero in green. Nobody is rushing you home.</li>
+            <li><strong>Closed the tab by accident?</strong> Your walk resumes where you left off.</li>
+            <li><strong>End walk</strong> saves your minutes outside and how many you found to the journal stats.</li>
+          </ul>
+        </section>
+
+        <!-- IDENTIFY -->
+        <section id="identify">
+          <h2>Identifying a find</h2>
+          <p>Use <strong>Identify</strong> or the <strong>I found something</strong> button during a walk. You can drop a photo in, paste one (Ctrl+V), choose a file, or use your webcam.</p>
+          <h3>Taking a photo that works</h3>
+          <div class="tip-grid">
+            <div class="tip good"><strong>✓ Do</strong><ul><li>Fill the frame with one subject</li><li>Show the parts that matter: a bird's face and breast, a mushroom's cap, a whole leaf</li><li>Keep the sun behind you</li></ul></div>
+            <div class="tip bad"><strong>✗ Avoid</strong><ul><li>Wide shots of a whole hedge or garden</li><li>Heavy digital zoom and blur</li><li>Strong backlight that turns it into a silhouette</li></ul></div>
+          </div>
+          <h3>Reading the result</h3>
+          <p>You get a name, a group (bird, tree, flower, bug, mushroom...) and a confidence bar.</p>
+          <dl class="defs">
+            <div><dt><span class="pill ok">Confident</span></dt><dd>60% or more. Usually right for common species. Still use the field note to check.</dd></div>
+            <div><dt><span class="pill mid">Likely</span></dt><dd>30–60%. Look at the other options too: similar species often score close together.</dd></div>
+            <div><dt><span class="pill low">Unsure</span></dt><dd>Below 30%. Either it isn't in the field guide yet or the photo is hard. Try a closer, clearer shot.</dd></div>
+          </dl>
+          <p><strong>Not right?</strong> Tap one of the other options under the name. The field note rewrites itself for that species, and your choice is saved as "you confirmed".</p>
+          <aside class="callout warn">
+            <strong>The field guide covers about 150 common species</strong> across North America, Europe and South Asia: garden birds, common trees, wildflowers, well-known mushrooms and insects. It always picks the closest match it knows, so a rare species may come back as a similar common one. See <a href="#your-species">add your own species</a>.
+          </aside>
+        </section>
+
+        <!-- FIELD NOTES -->
+        <section id="field-notes">
+          <h2>Reading a field note</h2>
+          <p>After every identification, Gemma writes a short note. It isn't an encyclopedia entry. It's a nudge to look more closely and keep exploring.</p>
+          <div class="note-sample">
+            <p><strong>Check it:</strong> Look for a pinkish-orange body and black-and-white striped wings.</p>
+            <p><strong>Look nearby:</strong> Scan the lawn for small holes where it has been probing for insects.</p>
+            <p><strong>Careful:</strong> Keep your distance, especially in spring when there may be a nest nearby.</p>
+          </div>
+          <dl class="defs">
+            <div><dt>Check it</dt><dd>Two features to confirm <em>in person</em>. This is how you catch a wrong ID: if the real thing doesn't match, pick another option.</dd></div>
+            <div><dt>Look nearby</dt><dd>One related thing to go and find next, which keeps the walk going.</dd></div>
+            <div><dt>Careful</dt><dd>A safety or respect tip. These come from a fixed, hand-written list, never from the AI.</dd></div>
+          </dl>
+          <h3>Why you can trust it more than a chatbot</h3>
+          <p>Small AI models sound confident even when they're wrong. So Gemma is never asked to remember facts. Each species in the field guide has a line of hand-written ID traits, and Gemma only rephrases those into things to check. Every note is then checked automatically. If it leaves out a section, drifts from the trusted traits or repeats the instructions, the app replaces it with a plain note built straight from the traits.</p>
+          <aside class="callout danger">
+            <strong>Never eat anything because an app identified it.</strong> That goes double for mushrooms, where deadly and edible species can look almost the same. Use this app to notice and learn, not to forage.
+          </aside>
+        </section>
+
+        <!-- JOURNAL -->
+        <section id="journal">
+          <h2>Your journal</h2>
+          <p>Every find you save goes into <strong>Journal</strong> with its photo (as a small thumbnail), the time, your own note and the field note. The stats at the top count your minutes outside, walks, finds and different species.</p>
+          <ul>
+            <li><strong>Location is opt-in.</strong> Tick "Save the location with this find" and the browser asks for permission once. Coordinates are rounded to about 10 m and stored only on this device.</li>
+            <li><strong>Export as Markdown</strong> downloads your whole journal as a text file you can keep, print or paste into a notes app.</li>
+            <li><strong>Delete</strong> removes a find for good.</li>
+            <li>The journal lives in this browser. Clearing site data, or using a private window, erases it, so export it now and then.</li>
+          </ul>
+        </section>
+
+        <!-- OFFLINE -->
+        <section id="offline">
+          <h2>Using it offline</h2>
+          <p>After the first download, the app, both models and your journal are all stored on your device.</p>
+          <h3>Check it really works offline</h3>
+          <ol>
+            <li>Open <strong>Setup</strong> and wait until both models say <strong>Ready, saved for offline use</strong>.</li>
+            <li>The status pill at the top should read <strong>Ready, works offline</strong>.</li>
+            <li>Turn on airplane mode (or disconnect Wi-Fi) and reload the page. It should load and the pill should read <strong>Offline and ready</strong>.</li>
+            <li>Identify a photo. If it works, you're set for the trail.</li>
+          </ol>
+          <h3>What the status pill means</h3>
+          <dl class="defs">
+            <div><dt><span class="dot-demo" data-state="idle"></span> Models not downloaded</dt><dd>Nothing is downloaded yet. Open Setup.</dd></div>
+            <div><dt><span class="dot-demo" data-state="loading"></span> Loading models…</dt><dd>Downloading, or loading from your device (about 15–20 s on later visits).</dd></div>
+            <div><dt><span class="dot-demo" data-state="ready"></span> Ready, works offline</dt><dd>Everything is stored locally.</dd></div>
+            <div><dt><span class="dot-demo" data-state="ready"></span> Ready (online only)</dt><dd>The models work but couldn't be saved, usually because the browser is low on storage. See <a href="#troubleshooting">troubleshooting</a>.</dd></div>
+          </dl>
+        </section>
+
+        <!-- SETTINGS -->
+        <section id="settings">
+          <h2>Settings</h2>
+          <dl class="defs">
+            <div><dt>Model size</dt><dd><strong>1B</strong> (default, ~785 MB) writes clearly better notes and lists. <strong>270M</strong> (~300 MB) is smaller and faster, but its writing is weaker, so more notes fall back to the plain template.</dd></div>
+            <div><dt>Run on: Auto</dt><dd>Uses your graphics chip (WebGPU) when the browser supports it. If that fails, it switches to the CPU by itself and remembers that for next time.</dd></div>
+            <div><dt>Run on: GPU / CPU</dt><dd>Forces one or the other. The CPU always uses the 270M model, because the 4-bit 1B model can't run on the browser's CPU backend.</dd></div>
+            <div><dt>Remove models</dt><dd>Deletes the downloaded models to free space. Your journal is kept.</dd></div>
+          </dl>
+          <p class="muted small">Typical speed on a mid-range laptop (Intel Iris Xe): identifying a photo takes 1–2 s, and a field note takes about 10 s on the GPU.</p>
+        </section>
+
+        <!-- TROUBLESHOOTING -->
+        <section id="troubleshooting">
+          <h2>Troubleshooting</h2>
+          <div class="faq">
+            <details><summary>The download is stuck or very slow</summary><p>The Gemma file is large (~785 MB). Keep the tab open and on Wi-Fi. If it stops, reload the page. Finished files are kept, so it picks up where it left off.</p></details>
+            <details><summary>It says "Ready (online only)"</summary><p>Your browser didn't let the site store ~900 MB. Free some disk space, leave private/incognito mode, and make sure the site isn't blocked from storing data. Then use <strong>Remove models</strong> and download again. Chrome and Edge normally allow several GB.</p></details>
+            <details><summary>Field notes are slow</summary><p>Check <strong>Setup → Your device</strong>. If WebGPU shows as "not available", Gemma is running on the CPU. Use Chrome or Edge and update your graphics drivers. Choosing the 270M model also speeds things up.</p></details>
+            <details><summary>"GPU unavailable for Gemma, switching to CPU"</summary><p>Your graphics driver couldn't run the model, so the app switched to the CPU automatically. To try the GPU again later, choose <strong>Run on: Auto</strong> in Setup, which clears the remembered failure.</p></details>
+            <details><summary>The identification is wrong</summary><p>Look at the other options first; the right one is often second. Then try a closer, clearer photo of the key parts. If the species isn't in the field guide at all, the app can't name it (yet).</p></details>
+            <details><summary>The camera button doesn't work</summary><p>The browser needs camera permission, and the site must be opened over https (or localhost). If you'd rather not allow it, take the photo with your camera app and use <strong>Choose a photo</strong>.</p></details>
+            <details><summary>My journal disappeared</summary><p>The journal is stored in this browser only. A different browser, a private window, or clearing site data will show an empty journal. Export it regularly to keep a copy.</p></details>
+          </div>
+        </section>
+
+        <!-- PRIVACY -->
+        <section id="privacy">
+          <h2>Privacy</h2>
+          <p>Nothing you do in the app leaves your device: no photos, notes, locations or journal entries. There is no account, analytics or server.</p>
+          <ul>
+            <li><strong>The only network requests</strong> are loading the app itself and downloading the model files from Hugging Face the first time.</li>
+            <li><strong>You can check this yourself:</strong> open your browser's developer tools, go to the Network tab, and identify a photo. Nothing is sent.</li>
+            <li><strong>Data is stored</strong> in the browser's own storage for this site (IndexedDB for the journal, the Origin Private File System for models). Removing the site's data in your browser settings erases all of it.</li>
+          </ul>
+        </section>
+
+        <!-- YOUR SPECIES -->
+        <section id="your-species">
+          <h2>Add your own species</h2>
+          <p>The field guide is a plain list in <code>src/labels.js</code>. Each entry has a name, a group and a line of ID traits:</p>
+          <pre><code>['hoopoe', 'bird', 'pinkish-orange body; black-and-white striped wings; fan-like crest tipped black; long curved bill'],</code></pre>
+          <ol>
+            <li>Add your local species with traits a beginner can check by eye.</li>
+            <li>Run <code>npm run embed</code> to update the field guide's embeddings (a minute or two).</li>
+            <li>Run <code>npm run build</code> and redeploy, or use <code>npm run dev</code> locally.</li>
+          </ol>
+          <p>No training or fine-tuning: SigLIP recognises the new names right away, and Gemma uses your traits in its notes.</p>
+        </section>
+
+        <!-- HOW -->
+        <section id="how">
+          <h2>How it works</h2>
+          <div class="how-grid">
+            <div class="how-card">
+              <span class="how-icon" aria-hidden="true">👁️</span>
+              <h3>SigLIP sees</h3>
+              <p>Google's open image–text model compares your photo with a description of every species in the field guide and ranks the closest matches. The descriptions are processed ahead of time, so only the image half of the model (~100 MB) runs on your device.</p>
+            </div>
+            <div class="how-card">
+              <span class="how-icon" aria-hidden="true">✍️</span>
+              <h3>Gemma writes</h3>
+              <p>Google's open-weight Gemma 3 language model turns trusted traits into field notes and plans your walks. It runs on your graphics chip through WebGPU, or on the CPU as a fallback.</p>
+            </div>
+            <div class="how-card">
+              <span class="how-icon" aria-hidden="true">💾</span>
+              <h3>Your browser stores</h3>
+              <p>Models are saved to the browser's private file system, the app is cached by a service worker, and your journal lives in IndexedDB. Together they make the app work fully offline.</p>
+            </div>
+          </div>
+          <p class="muted small">Built with <a href="https://github.com/huggingface/transformers.js" rel="noopener">Transformers.js</a> and ONNX Runtime Web. Models: <a href="https://huggingface.co/onnx-community/gemma-3-1b-it-ONNX" rel="noopener">Gemma 3 1B</a> (Gemma Terms of Use), <a href="https://huggingface.co/Xenova/siglip-base-patch16-224" rel="noopener">SigLIP base</a> (Apache-2.0). <a href="https://github.com/Eternity0207/pocket-field-guide" rel="noopener">Source code</a> is MIT-licensed.</p>
+        </section>
+
+        <div class="guide-cta card">
+          <h2>Ready?</h2>
+          <p class="muted">Download the models, plan a 15-minute walk, and see what you notice.</p>
+          <a class="btn primary" href="./">Open Pocket Field Guide →</a>
+        </div>
+      </article>
+    </div>
+
+    <footer class="footer">
+      <a href="./">App</a>
+      <span aria-hidden="true">·</span>
+      <a href="#privacy">Privacy</a>
+      <span aria-hidden="true">·</span>
+      <a href="https://github.com/Eternity0207/pocket-field-guide" rel="noopener">Source on GitHub</a>
+    </footer>
+
+    <script type="module" src="/src/guide.js"></script>
+  </body>
+</html>

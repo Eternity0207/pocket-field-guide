@@ -5,40 +5,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#2f4a32" />
     <meta name="description" content="Identify plants, birds and bugs with AI that runs entirely on your device. Then put the phone away and go outside." />
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
     <link rel="manifest" href="manifest.webmanifest" />
     <title>Pocket Field Guide</title>
   </head>
   <body>
+    <a class="skip" href="#main">Skip to content</a>
     <header class="topbar">
-      <div class="brand">
+      <a class="brand" href="./" aria-label="Pocket Field Guide home">
         <span class="brand-mark" aria-hidden="true">🌿</span>
-        <div>
-          <h1>Pocket Field Guide</h1>
-          <p class="tagline">Local AI. No account. Works with no signal.</p>
-        </div>
+        <span>
+          <span class="brand-name">Pocket Field Guide</span>
+          <span class="tagline">Local AI · No account · Works with no signal</span>
+        </span>
+      </a>
+      <div class="top-actions">
+        <a class="btn ghost small" href="guide.html">📖 Guide</a>
+        <button class="status-pill" id="statusPill" type="button" title="Open offline setup">
+          <span class="dot" id="statusDot"></span><span id="statusText">Models not downloaded</span>
+        </button>
       </div>
-      <button class="status-pill" id="statusPill" type="button" aria-describedby="statusText">
-        <span class="dot" id="statusDot"></span><span id="statusText">Models not downloaded</span>
-      </button>
     </header>
 
     <nav class="tabs" role="tablist" aria-label="Sections">
-      <button role="tab" class="tab" data-tab="walk" aria-selected="true">Go outside</button>
-      <button role="tab" class="tab" data-tab="identify" aria-selected="false">Identify</button>
-      <button role="tab" class="tab" data-tab="journal" aria-selected="false">Journal</button>
-      <button role="tab" class="tab" data-tab="setup" aria-selected="false">Offline setup</button>
+      <button role="tab" class="tab" data-tab="walk" aria-selected="true"><span aria-hidden="true">🥾</span> Go outside</button>
+      <button role="tab" class="tab" data-tab="identify" aria-selected="false"><span aria-hidden="true">🔍</span> Identify</button>
+      <button role="tab" class="tab" data-tab="journal" aria-selected="false"><span aria-hidden="true">📓</span> Journal</button>
+      <button role="tab" class="tab" data-tab="setup" aria-selected="false"><span aria-hidden="true">⚙️</span> Setup</button>
     </nav>
 
-    <main>
+    <main id="main">
+      <!-- Shared first-run checklist (shown above whichever tab is open) -->
+      <section class="card onboard" id="onboard" hidden aria-labelledby="onboardTitle">
+        <div class="card-head">
+          <h2 id="onboardTitle">Get started in three steps</h2>
+          <button class="btn ghost small" id="onboardHide" type="button">Hide</button>
+        </div>
+        <ol class="steps">
+          <li class="step" id="step1">
+            <span class="step-num">1</span>
+            <div class="step-body">
+              <strong>Download the AI models once</strong>
+              <p class="muted small">About 900 MB on Wi-Fi. After that, everything works offline and nothing you do leaves this device.</p>
+              <div class="progress slim" id="onboardProgressWrap" hidden><div class="bar" id="onboardBar"></div></div>
+              <p class="small muted" id="onboardStatus"></p>
+              <button class="btn primary small" id="onboardDownload" type="button">Download models</button>
+            </div>
+          </li>
+          <li class="step" id="step2">
+            <span class="step-num">2</span>
+            <div class="step-body">
+              <strong>Plan a walk</strong>
+              <p class="muted small">Choose your time and place. You get a short list of things to look for, then the screen goes quiet.</p>
+            </div>
+          </li>
+          <li class="step" id="step3">
+            <span class="step-num">3</span>
+            <div class="step-body">
+              <strong>Identify what you find</strong>
+              <p class="muted small">Take one photo, get a name and two things to check in person, and save it to your journal.</p>
+            </div>
+          </li>
+        </ol>
+        <p class="small muted">New here? The <a href="guide.html">full guide</a> explains everything in five minutes.</p>
+      </section>
+
       <!-- WALK -->
       <section class="panel" id="panel-walk" role="tabpanel">
         <div class="card hero">
-          <h2>Plan a short walk with things to look for</h2>
-          <p class="muted">Pick how long you have. Gemma writes a few things to find, then the screen gets out of your way.</p>
+          <p class="eyebrow">Go outside</p>
+          <h1>Plan a short walk with things to look for</h1>
+          <p class="muted lead">Pick how long you have and where you'll be. Gemma writes a few things to find, then the screen gets out of your way.</p>
           <form id="walkForm" class="walk-form">
             <fieldset>
-              <legend>Time</legend>
+              <legend>How long?</legend>
               <div class="seg" id="walkTime">
                 <label><input type="radio" name="time" value="15" /> <span>15 min</span></label>
                 <label><input type="radio" name="time" value="30" checked /> <span>30 min</span></label>
@@ -46,47 +86,58 @@
               </div>
             </fieldset>
             <fieldset>
-              <legend>Where</legend>
+              <legend>Where?</legend>
               <div class="seg" id="walkPlace">
-                <label><input type="radio" name="place" value="city streets" /> <span>Streets</span></label>
-                <label><input type="radio" name="place" value="a park" checked /> <span>Park</span></label>
-                <label><input type="radio" name="place" value="woods or a trail" /> <span>Woods</span></label>
-                <label><input type="radio" name="place" value="a garden or backyard" /> <span>Garden</span></label>
-                <label><input type="radio" name="place" value="a beach or waterside" /> <span>Water</span></label>
+                <label><input type="radio" name="place" value="city streets" /> <span>🏙️ Streets</span></label>
+                <label><input type="radio" name="place" value="a park" checked /> <span>🌳 Park</span></label>
+                <label><input type="radio" name="place" value="woods or a trail" /> <span>🌲 Woods</span></label>
+                <label><input type="radio" name="place" value="a garden or backyard" /> <span>🌻 Garden</span></label>
+                <label><input type="radio" name="place" value="a beach or waterside" /> <span>🌊 Water</span></label>
               </div>
             </fieldset>
-            <button class="btn primary" type="submit" id="walkBtn">Plan my walk</button>
+            <div class="row">
+              <button class="btn primary" type="submit" id="walkBtn">Plan my walk</button>
+              <span class="small muted" id="walkHint"></span>
+            </div>
           </form>
         </div>
 
         <div class="card" id="questCard" hidden>
           <div class="card-head">
-            <h3>Things to look for</h3>
+            <h2>Things to look for</h2>
             <span class="muted small" id="questMeta"></span>
           </div>
           <ol class="quests" id="questList"></ol>
           <div class="stream" id="questStream" aria-live="polite"></div>
           <div class="row">
             <button class="btn primary" id="startWalk" type="button" disabled>Start walking</button>
+            <button class="btn ghost" id="replanBtn" type="button" hidden>Give me different ones</button>
             <button class="btn ghost" id="stopQuest" type="button" hidden>Stop</button>
           </div>
+          <p class="small muted">When you start, the screen switches to a timer and checklist. Tick things off as you find them, and tap <strong>I found something</strong> to identify it.</p>
+        </div>
+
+        <div class="howto">
+          <div class="howto-item"><span aria-hidden="true">🗺️</span><p><strong>Plan</strong><br /><span class="muted small">A list made for your time, place and season.</span></p></div>
+          <div class="howto-item"><span aria-hidden="true">📵</span><p><strong>Walk</strong><br /><span class="muted small">A quiet screen with a timer. Pocket the phone.</span></p></div>
+          <div class="howto-item"><span aria-hidden="true">📷</span><p><strong>Spot</strong><br /><span class="muted small">One photo, one name, two things to check.</span></p></div>
         </div>
       </section>
 
       <!-- IDENTIFY -->
       <section class="panel" id="panel-identify" role="tabpanel" hidden>
         <div class="card">
-          <h2>What did you find?</h2>
-          <p class="muted">Add a photo of a plant, bird, bug, mushroom or leaf. It's checked on this device and never uploaded.</p>
-          <div class="drop" id="drop" tabindex="0">
+          <p class="eyebrow">Identify</p>
+          <h1>What did you find?</h1>
+          <p class="muted lead">Add a photo of a plant, bird, bug, mushroom or leaf. It's identified on this device and never uploaded.</p>
+          <div class="drop" id="drop" tabindex="0" role="button" aria-label="Add a photo: drop, paste or choose a file">
             <input type="file" id="fileInput" accept="image/*" capture="environment" hidden />
             <div class="drop-inner">
               <span class="drop-icon" aria-hidden="true">📷</span>
-              <strong>Drop a photo here</strong>
-              <span class="muted small">or</span>
+              <strong>Drop a photo here, or paste one</strong>
               <div class="row center">
-                <button class="btn" id="pickBtn" type="button">Choose a photo</button>
-                <button class="btn ghost" id="camBtn" type="button">Use camera</button>
+                <button class="btn primary" id="pickBtn" type="button">Choose a photo</button>
+                <button class="btn" id="camBtn" type="button">Use camera</button>
               </div>
             </div>
           </div>
@@ -97,6 +148,15 @@
               <button class="btn ghost" id="camClose" type="button">Close</button>
             </div>
           </div>
+          <details class="tips">
+            <summary>Tips for a good identification</summary>
+            <ul>
+              <li><strong>Fill the frame</strong> with one subject. One flower, one leaf or one bird, not the whole garden.</li>
+              <li><strong>Get the key parts in view:</strong> the face and breast of a bird, the cap and gills of a mushroom, a whole leaf.</li>
+              <li><strong>Avoid heavy zoom and backlight.</strong> Step closer and keep the sun behind you.</li>
+              <li><strong>Not sure? Check the other options.</strong> The right answer is often second. Tap it to switch.</li>
+            </ul>
+          </details>
         </div>
 
         <div class="card result" id="resultCard" hidden>
@@ -104,8 +164,8 @@
             <img id="resultImg" alt="Your photo" />
             <div>
               <p class="eyebrow" id="resultGroup"></p>
-              <h3 id="resultName">…</h3>
-              <div class="confidence"><div class="bar" id="confBar"></div></div>
+              <h2 id="resultName">…</h2>
+              <div class="confidence" aria-hidden="true"><div class="bar" id="confBar"></div></div>
               <p class="muted small" id="confText"></p>
               <p class="small muted" id="altLabel">Not it? Pick another option:</p>
               <div class="chips" id="alts"></div>
@@ -113,11 +173,12 @@
           </div>
           <div class="note">
             <div class="note-head">
-              <h4>Field note <span class="muted small">by Gemma, on this device</span></h4>
+              <h3>Field note <span class="muted small">written on this device</span></h3>
               <button class="btn ghost small" id="stopNote" type="button" hidden>Stop</button>
             </div>
             <div class="stream" id="noteStream" aria-live="polite"></div>
             <p class="small muted" id="noteMeta"></p>
+            <p class="small muted note-help"><strong>Check it</strong> lists things to confirm with your own eyes. <strong>Look nearby</strong> gives you something to find next. <a href="guide.html#field-notes">How notes work</a></p>
           </div>
           <label class="field">
             <span>Your note (optional)</span>
@@ -135,26 +196,38 @@
 
       <!-- JOURNAL -->
       <section class="panel" id="panel-journal" role="tabpanel" hidden>
-        <div class="stats" id="stats"></div>
         <div class="card-head">
-          <h2>Your finds</h2>
+          <div>
+            <p class="eyebrow">Journal</p>
+            <h1>Your finds</h1>
+          </div>
           <button class="btn ghost small" id="exportBtn" type="button">Export as Markdown</button>
         </div>
+        <div class="stats" id="stats"></div>
         <div class="journal" id="journal"></div>
-        <p class="empty muted" id="journalEmpty">No finds yet. Your journal fills up when you go outside, not when you scroll.</p>
+        <div class="card empty" id="journalEmpty">
+          <span class="empty-icon" aria-hidden="true">🍃</span>
+          <h2>No finds yet</h2>
+          <p class="muted">Your journal fills up when you go outside, not when you scroll.</p>
+          <div class="row center">
+            <button class="btn primary" type="button" data-goto="walk">Plan a walk</button>
+            <button class="btn" type="button" data-goto="identify">Identify a photo</button>
+          </div>
+        </div>
       </section>
 
       <!-- SETUP -->
       <section class="panel" id="panel-setup" role="tabpanel" hidden>
         <div class="card">
-          <h2>Download once, use offline</h2>
-          <p class="muted">Both models run in your browser. Download them on Wi-Fi once, and the app keeps working on a trail with no signal. Nothing you photograph or write is ever sent anywhere.</p>
+          <p class="eyebrow">Setup</p>
+          <h1>Download once, use offline</h1>
+          <p class="muted lead">Both models run inside your browser. Download them once on Wi-Fi and the app keeps working on a trail with no signal. Nothing you photograph or write is sent anywhere.</p>
 
           <div class="model">
             <div class="model-head">
               <div>
-                <strong>Vision: CLIP ViT-B/32</strong>
-                <p class="muted small">Open-weight image model, about 155 MB. Matches your photo against a built-in field guide of about 150 species.</p>
+                <strong>👁️ Vision: SigLIP</strong>
+                <p class="muted small">Google's open image model, about 100 MB. Matches your photo against a built-in field guide of about 150 species.</p>
               </div>
               <span class="badge" id="visionBadge">Not loaded</span>
             </div>
@@ -165,19 +238,26 @@
           <div class="model">
             <div class="model-head">
               <div>
-                <strong>Language: Gemma 3</strong>
+                <strong>✍️ Language: Gemma 3</strong>
                 <p class="muted small">Google's open-weight model. Writes the field notes and walk ideas.</p>
               </div>
               <span class="badge" id="llmBadge">Not loaded</span>
             </div>
-            <div class="seg" id="sizeSeg">
-              <label><input type="radio" name="size" value="1b" checked /> <span>1B, better (about 880 MB)</span></label>
-              <label><input type="radio" name="size" value="270m" /> <span>270M, faster (about 350 MB)</span></label>
+            <div class="setting">
+              <span class="setting-label">Model size</span>
+              <div class="seg" id="sizeSeg">
+                <label><input type="radio" name="size" value="1b" checked /> <span>1B: best quality (~785 MB)</span></label>
+                <label><input type="radio" name="size" value="270m" /> <span>270M: smaller and faster (~300 MB)</span></label>
+              </div>
             </div>
-            <div class="seg" id="deviceSeg" aria-label="Run Gemma on">
-              <label><input type="radio" name="device" value="auto" checked /> <span>Auto (speed test)</span></label>
-              <label><input type="radio" name="device" value="webgpu" /> <span>GPU</span></label>
-              <label><input type="radio" name="device" value="wasm" /> <span>CPU</span></label>
+            <div class="setting">
+              <span class="setting-label">Run on</span>
+              <div class="seg" id="deviceSeg">
+                <label><input type="radio" name="device" value="auto" checked /> <span>Auto</span></label>
+                <label><input type="radio" name="device" value="webgpu" /> <span>GPU</span></label>
+                <label><input type="radio" name="device" value="wasm" /> <span>CPU</span></label>
+              </div>
+              <p class="small muted">Auto uses your GPU when the browser supports WebGPU and falls back to the CPU if it fails. The CPU always uses the 270M model (~590 MB).</p>
             </div>
             <div class="progress"><div class="bar" id="llmBar"></div></div>
             <p class="small muted" id="llmStatus"></p>
@@ -187,30 +267,42 @@
             <button class="btn primary" id="downloadBtn" type="button">Download models</button>
             <button class="btn ghost small" id="clearBtn" type="button">Remove models</button>
           </div>
-          <p class="small muted" id="deviceInfo"></p>
+          <dl class="facts" id="facts">
+            <div><dt>Your device</dt><dd id="deviceInfo">Checking…</dd></div>
+            <div><dt>Storage used</dt><dd id="storageInfo">Checking…</dd></div>
+          </dl>
         </div>
 
         <div class="card">
-          <h3>Why it runs on your device</h3>
+          <h2>Why it runs on your device</h2>
           <ul class="why">
             <li><strong>No signal needed.</strong> Trails, parks and riverbanks often have no coverage. A cloud API would stop working exactly where you need it.</li>
             <li><strong>Your locations stay private.</strong> A journal of where you walk is sensitive. Here it only exists in this browser.</li>
-            <li><strong>Free to run.</strong> No API key and no per-photo cost, so nothing pushes you to keep it short or to pay.</li>
-            <li><strong>You can swap or extend it.</strong> The species list is a plain file. Add the birds in your area and the model knows them right away, with no retraining.</li>
+            <li><strong>Free to run.</strong> No API key and no per-photo cost.</li>
+            <li><strong>You can extend it.</strong> The species list is a plain file. Add the birds in your area and the model knows them right away. <a href="guide.html#your-species">How</a></li>
           </ul>
         </div>
       </section>
     </main>
 
+    <footer class="footer">
+      <a href="guide.html">Guide</a>
+      <span aria-hidden="true">·</span>
+      <a href="guide.html#privacy">Privacy</a>
+      <span aria-hidden="true">·</span>
+      <a href="https://github.com/Eternity0207/pocket-field-guide" rel="noopener">Source on GitHub</a>
+    </footer>
+
     <!-- Walking mode: the screen gets out of the way -->
-    <div class="walkmode" id="walkMode" hidden>
+    <div class="walkmode" id="walkMode" hidden role="dialog" aria-modal="true" aria-label="Walking">
       <div class="walkmode-inner">
-        <p class="eyebrow">Walking</p>
+        <p class="eyebrow">Walking · <span id="walkPlaceLabel"></span></p>
         <div class="timer" id="timer">30:00</div>
+        <p class="walk-progress" id="walkProgress"></p>
         <ol class="quests big" id="walkList"></ol>
-        <p class="muted small">Put the phone away. Come back when you spot one.</p>
+        <p class="muted">Put the phone away. Come back when you spot one.</p>
         <div class="row center">
-          <button class="btn" id="walkIdentify" type="button">I found something</button>
+          <button class="btn primary" id="walkIdentify" type="button">📷 I found something</button>
           <button class="btn ghost" id="endWalk" type="button">End walk</button>
         </div>
       </div>

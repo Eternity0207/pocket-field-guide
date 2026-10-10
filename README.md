@@ -8,6 +8,8 @@ An AI field guide that runs **entirely in your browser** and is built to get you
 
 No account, no API key, no server. After the first download it works with **no internet at all**.
 
+**New to the app?** The built-in guide (`guide.html`, linked from the app's header) walks through every feature, offline use, settings and troubleshooting.
+
 ## Open-source AI inside
 
 | Part | What | License |

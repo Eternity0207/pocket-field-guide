@@ -1,9 +1,9 @@
 // Offline shell for Pocket Field Guide.
 // Model weights are cached separately by transformers.js (Cache API), so this
 // worker only needs to keep the app itself available with no network.
-const CACHE = 'pfg-shell-v2';
+const CACHE = 'pfg-shell-v3';
 const SCOPE = self.registration.scope;
-const SHELL = ['', 'index.html', 'manifest.webmanifest', 'label-embeds.json', 'label-embeds.bin', 'ort/ort-wasm-simd-threaded.asyncify.mjs', 'ort/ort-wasm-simd-threaded.asyncify.wasm'];
+const SHELL = ['', 'index.html', 'guide.html', 'icon.svg', 'manifest.webmanifest', 'label-embeds.json', 'label-embeds.bin', 'ort/ort-wasm-simd-threaded.asyncify.mjs', 'ort/ort-wasm-simd-threaded.asyncify.wasm'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL.map((p) => new URL(p, SCOPE).href))).then(() => self.skipWaiting()));
@@ -24,10 +24,11 @@ self.addEventListener('fetch', (e) => {
 
   // Pages: network first so updates show up, cached copy when offline.
   if (req.mode === 'navigate') {
+    const page = new URL(url.pathname.endsWith('guide.html') ? 'guide.html' : 'index.html', SCOPE).href;
     e.respondWith(
       fetch(req)
-        .then((res) => { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(new URL('index.html', SCOPE).href, copy)); return res; })
-        .catch(() => caches.match(new URL('index.html', SCOPE).href)),
+        .then((res) => { if (res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(page, copy)); } return res; })
+        .catch(() => caches.match(page)),
     );
     return;
   }

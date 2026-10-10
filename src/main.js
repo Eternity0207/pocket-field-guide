@@ -113,10 +113,18 @@ function onLoadError(which, message) {
   toast(navigator.onLine ? 'A model failed to load. Try again from Offline setup.' : 'You are offline and this model is not downloaded yet.');
 }
 
+const progressByModel = {};
 function onProgress({ which, loaded, total }) {
   if (!total) return;
   setBar(which, loaded / total);
   setModelStatus(which, `Downloading… ${fmtMB(loaded)} of ${fmtMB(total)}`);
+  progressByModel[which] = { loaded, total };
+  const all = Object.values(progressByModel);
+  const l = all.reduce((a, p) => a + p.loaded, 0);
+  const t = all.reduce((a, p) => a + p.total, 0);
+  $('onboardProgressWrap').hidden = false;
+  $('onboardBar').style.width = `${Math.min(100, (l / t) * 100)}%`;
+  $('onboardStatus').textContent = `Downloading… ${fmtMB(l)} of ${fmtMB(t)}. You can keep using the app.`;
 }
 
 const fmtMB = (b) => `${Math.round(b / 1e6)} MB`;
@@ -149,6 +157,44 @@ function renderStatus() {
     : any ? 'Loading models…' : 'Models not downloaded';
   $('downloadBtn').disabled = any || both;
   $('downloadBtn').textContent = both ? 'Downloaded ✓' : any ? 'Downloading…' : 'Download models';
+  $('onboardDownload').hidden = any || both;
+  if (both) { $('onboardProgressWrap').hidden = true; $('onboardStatus').textContent = 'Done. Models are on this device.'; }
+  else if (!any && state.vision !== 'error' && state.llm !== 'error') $('onboardStatus').textContent = '';
+  $('walkHint').textContent = state.llm === 'ready' ? '' : state.llm === 'loading'
+    ? 'Gemma is still loading; your list will start as soon as it is ready.'
+    : 'The first plan downloads Gemma (~785 MB).';
+  renderOnboarding();
+  updateStorageInfo();
+}
+
+// ---------- First-run checklist ----------
+
+async function renderOnboarding() {
+  const modelsDone = state.vision === 'ready' && state.llm === 'ready';
+  const walked = store.get('walks', []).length > 0 || store.get('planned', false);
+  const found = (await listFinds().catch(() => [])).length > 0;
+  $('step1').classList.toggle('done', modelsDone);
+  $('step2').classList.toggle('done', walked);
+  $('step3').classList.toggle('done', found);
+  const allDone = modelsDone && walked && found;
+  $('onboard').hidden = allDone || store.get('onboardHidden', false);
+}
+$('onboardHide').addEventListener('click', () => { store.set('onboardHidden', true); $('onboard').hidden = true; });
+$('onboardDownload').addEventListener('click', () => $('downloadBtn').click());
+document.querySelectorAll('[data-goto]').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.goto)));
+
+let storageTimer;
+function updateStorageInfo() {
+  clearTimeout(storageTimer);
+  storageTimer = setTimeout(async () => {
+    try {
+      const { usage = 0, quota = 0 } = await navigator.storage.estimate();
+      const persisted = await navigator.storage.persisted?.();
+      $('storageInfo').textContent = `${fmtMB(usage)} of ${(quota / 1e9).toFixed(1)} GB available to this site${persisted ? ', protected from automatic clean-up' : ''}.`;
+    } catch {
+      $('storageInfo').textContent = 'Unknown';
+    }
+  }, 400);
 }
 
 // ---------- Tabs ----------
@@ -458,6 +504,7 @@ $('saveFind').addEventListener('click', async () => {
     walkId: activeWalk?.id || null,
   });
   toast(`Saved ${cap(current.chosen.name)} to your journal`);
+  renderOnboarding();
   if (activeWalk) { $('resultCard').hidden = true; $('walkMode').hidden = false; }
 });
 
@@ -502,7 +549,7 @@ function renderQuestList(el, interactive) {
       const cb = document.createElement('input');
       cb.type = 'checkbox';
       cb.checked = q.done;
-      cb.addEventListener('change', () => { quests[i].done = cb.checked; li.className = cb.checked ? 'done' : ''; saveWalk(); });
+      cb.addEventListener('change', () => { quests[i].done = cb.checked; li.className = cb.checked ? 'done' : ''; saveWalk(); renderWalkProgress(); });
       const span = document.createElement('span');
       span.textContent = q.text;
       label.append(cb, span);
@@ -525,7 +572,8 @@ $('walkForm').addEventListener('submit', async (e) => {
 
   $('questCard').hidden = false;
   $('questList').innerHTML = '';
-  $('questStream').innerHTML = state.llm === 'ready' ? '' : '<p class="muted">Waking up Gemma (first time takes a moment)…</p>';
+  $('questStream').innerHTML = state.llm === 'ready' ? '' : `<p class="muted">${store.get('downloaded', {}).llm ? 'Waking up Gemma…' : 'Downloading Gemma for the first time (~785 MB). Your list starts as soon as it is ready.'}</p>`;
+  $('replanBtn').hidden = true;
   $('questStream').classList.add('typing');
   $('questMeta').textContent = `${minutes} min · ${place} · ${s}`;
   $('startWalk').disabled = true;
@@ -563,15 +611,19 @@ Only output the numbered list.`;
     $('startWalk').dataset.minutes = minutes;
     $('startWalk').dataset.place = place;
   } catch (err) {
-    quests = fallbackQuests(place).map((t) => ({ text: t, done: false }));
+    quests = fallbackQuests(place).slice(0, count).map((t) => ({ text: t, done: false }));
     $('questStream').innerHTML = `<p class="muted small">Gemma isn't available (${escapeHtml(err.message)}). Here's a classic list instead.</p>`;
     renderQuestList($('questList'), false);
     $('startWalk').disabled = false;
     $('startWalk').dataset.minutes = minutes;
+    $('startWalk').dataset.place = place;
   } finally {
     $('questStream').classList.remove('typing');
     $('walkBtn').disabled = false;
     $('stopQuest').hidden = true;
+    $('replanBtn').hidden = false;
+    store.set('planned', true);
+    renderOnboarding();
   }
 });
 $('stopQuest').addEventListener('click', stopGen);
@@ -588,11 +640,18 @@ function fallbackQuests() {
 
 function saveWalk() { if (activeWalk) store.set('activeWalk', { ...activeWalk, quests }); }
 
+function renderWalkProgress() {
+  const n = quests.filter((q) => q.done).length;
+  $('walkProgress').textContent = n === quests.length && n > 0 ? 'All found. Nice work! 🎉' : `${n} of ${quests.length} found`;
+}
+
 function startWalk(walk) {
   activeWalk = walk;
   quests = walk.quests;
   saveWalk();
   renderQuestList($('walkList'), true);
+  renderWalkProgress();
+  $('walkPlaceLabel').textContent = walk.place || 'outside';
   $('walkMode').hidden = false;
   document.body.classList.add('walking');
   tick();
@@ -720,7 +779,7 @@ async function deviceInfo() {
   } catch { state.gpu = null; }
   const gpu = state.gpu ? `available (${state.gpu.vendor})` : 'not available';
   const threads = self.crossOriginIsolated ? `${navigator.hardwareConcurrency || '?'} CPU threads` : '1 CPU thread (page is not cross-origin isolated)';
-  $('deviceInfo').textContent = `WebGPU: ${gpu}. ${threads}. On CPU, Gemma uses the 270M model.`;
+  $('deviceInfo').textContent = `WebGPU ${gpu}; ${threads}.`;
 }
 
 window.addEventListener('online', renderStatus);
@@ -736,6 +795,7 @@ for (const [name, d] of [['size', '1b'], ['device', 'auto']]) {
 startWorker();
 showTab(store.get('tab', 'walk'));
 renderStatus();
+$('replanBtn').addEventListener('click', () => $('walkForm').requestSubmit());
 
 // If models were downloaded before, warm them from the local cache in the background.
 gpuReady = deviceInfo();

@@ -4,9 +4,9 @@
   "description": "On-device AI field guide that gets you outside. Gemma 3 + CLIP running in the browser.",
   "scripts": {
     "predev": "node scripts/copy-ort.mjs",
-    "dev": "vite",
+    "dev": "node api.js && vite",
     "prebuild": "node scripts/copy-ort.mjs",
-    "build": "vite build",
+    "build": "node api.js && vite build",
     "preview": "vite preview",
     "embed": "node scripts/embed-labels.mjs"
   },
